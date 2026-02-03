@@ -21,21 +21,6 @@ def prompt_value(name: str) -> str:
     prompt = f"Enter {name}: "
     return getpass(prompt)
 
-def create_secrets() -> dict:
-    """Prompt for all secrets, store in a file, and return as a dictionary."""
-    secrets = {}
-    secrets["open_ai_key"] = prompt_value("OPENAI_API_KEY")
-    secrets["gmail_email"] = prompt_value("GMAIL EMAIL")
-    secrets["gmail_app_password"] = prompt_value("GMAIL APP PASSWORD")
-    secrets["postgres_connection_string"] = prompt_value("POSTGRES CONNECTION STRING")
-
-    # Store the secrets in the JSON file
-    with SECRETS_FILE.open("w") as f:
-        json.dump(secrets, f, indent=4)
-    
-    print(f"Secrets updated and saved to {SECRETS_FILE}")
-    return secrets
-
 def get_secret(name: str) -> str:
     """Retrieve a single secret by name from the secrets file."""
     with SECRETS_FILE.open("r") as f:
