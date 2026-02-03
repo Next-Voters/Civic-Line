@@ -39,7 +39,7 @@ def sendEmails():
     # Use context manager for DB
     with psycopg2.connect(postgres_connection_string) as conn:
         with conn.cursor() as cursor:
-            cursor.execute("SELECT email FROM email_subscriptions;")
+            cursor.execute("SELECT email FROM subscriptions;")
             subscribers = cursor.fetchall()
     
     html_body = buildEmailHtml(categories)
