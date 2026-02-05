@@ -34,7 +34,7 @@ def scrapeCouncilMeetings(html):
             print("Meeting details:", meetingDetail['href'])
 
             # Ignore after 2 meetings 
-            if len(meetings) >= 2:
+            if len(meetings) >= 4:
                 break 
 
 def scrapeMeetingDetails():
