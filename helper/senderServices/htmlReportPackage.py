@@ -4,6 +4,7 @@ from os import getenv
 from supabase import create_client
 from uuid import uuid4
 from datetime import date
+import html as _html
 from ...globalStates import categories_link
 
 load_dotenv()
@@ -12,6 +13,27 @@ key = getenv("SUPABASE_KEY")
 supabase = create_client(url, key)
 
 today = date.today();
+
+
+def format_summary_html(text: str) -> str:
+    raw = (text or "").strip()
+    if not raw:
+        return "<p class=\"summary\">No summary provided.</p>"
+
+    lines = [ln.strip() for ln in raw.splitlines() if ln.strip()]
+    bullet_lines = [ln for ln in lines if ln.startswith("*")]
+
+    if bullet_lines and len(bullet_lines) == len(lines):
+        lis = []
+        for ln in bullet_lines:
+            item = ln.lstrip("*").strip()
+            if item:
+                lis.append(f"<li>{_html.escape(item)}</li>")
+        if not lis:
+            return f"<p class=\"summary\">{_html.escape(raw)}</p>"
+        return "<ul class=\"summary-list\">" + "".join(lis) + "</ul>"
+
+    return "".join(f"<p class=\"summary\">{_html.escape(ln)}</p>" for ln in lines)
 
 def buildHTMLReport(): 
     for category, bills in categories.items():
@@ -45,11 +67,11 @@ def buildHTMLReport():
                     padding: 28px 16px 48px;
                   }}
                   .header {{
-                    background: linear-gradient(135deg, #4064ff 0%, #7c4dff 100%);
-                    color: #fff;
+                    background: var(--card);
+                    color: var(--text);
+                    border: 1px solid var(--border);
                     border-radius: 16px;
-                    padding: 22px 20px;
-                    box-shadow: 0 12px 30px rgba(17, 24, 39, 0.12);
+                    padding: 18px 18px;
                   }}
                   .title {{
                     margin: 0;
@@ -59,7 +81,7 @@ def buildHTMLReport():
                   }}
                   .subtitle {{
                     margin: 6px 0 0;
-                    color: rgba(255, 255, 255, 0.9);
+                    color: var(--muted);
                     font-size: 14px;
                     font-weight: 600;
                   }}
@@ -74,7 +96,6 @@ def buildHTMLReport():
                     border: 1px solid var(--border);
                     border-radius: 14px;
                     padding: 16px;
-                    box-shadow: 0 8px 20px rgba(17, 24, 39, 0.06);
                   }}
                   .bill-title {{
                     margin: 0;
@@ -103,6 +124,12 @@ def buildHTMLReport():
                   }}
                   p {{ margin: 0; }}
                   .summary {{ color: var(--text); }}
+                  .summary-list {{
+                    margin: 8px 0 0;
+                    padding-left: 18px;
+                    color: var(--text);
+                  }}
+                  .summary-list li {{ margin: 6px 0; }}
                   .sponsors {{ color: var(--muted); }}
                   .empty {{
                     background: var(--card);
@@ -119,21 +146,22 @@ def buildHTMLReport():
               <body>
                 <div class="container">
                   <div class="header">
-                    <h1 class="title">{category}</h1>
+                    <h1 class="title">{_html.escape(str(category))}</h1>
                     <p class="subtitle">{today}</p>
                   </div>
                   <div class="grid">
             """
         for bill in bills:
             sponsors = ", ".join(bill.get("sponsors", []) or [])
+            summary_html = format_summary_html(bill.get("summarized", ""))
             html += f"""
                     <div class="card">
-                      <h3 class="bill-title">{bill.get("name", "Unknown")}</h3>
-                      <div class="pill">{bill.get("fileNumber", "N/A")}</div>
+                      <h3 class="bill-title">{_html.escape(str(bill.get("name", "Unknown")))}</h3>
+                      <div class="pill">{_html.escape(str(bill.get("fileNumber", "N/A")))}</div>
                       <div class="label">Summary</div>
-                      <p class="summary">{bill.get("summarized", "No summary provided.")}</p>
+                      {summary_html}
                       <div class="label">Sponsors</div>
-                      <p class="sponsors">{sponsors or "—"}</p>
+                      <p class="sponsors">{_html.escape(sponsors) if sponsors else "—"}</p>
                     </div>
             """
         if not bills:
