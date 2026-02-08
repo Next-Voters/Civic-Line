@@ -38,18 +38,13 @@ def buildHTMLReport():
             file.write(html)
         
         with open(fileId, 'rb') as file:
-            response = (
-                supabase.storage
-                .from_("next-voters-summaries")
-                .upload(
-                    file=file,
-                    path=f"public/{today}/{category}.html",
-                    file_options={
-                        "content-type": "text/html",
-                        "cache-control": "3600", 
-                        "upsert": False
-                    }                        
-                )
+            supabase.storage.from_("next-voters-summaries").upload(
+                file=file,
+                path=f"public/{today}/{category}.html",
+                file_options={
+                    "content-type": "text/html",
+                    "cache-control": "3600", 
+                    "upsert": False
+                }                        
             )
-
-            categories_link[category] = response.fullPath
+            categories_link[category] = f"https://nextvoters.com/api/render?path={today}/{category}.html"
