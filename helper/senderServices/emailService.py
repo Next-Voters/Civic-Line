@@ -80,12 +80,12 @@ def buildEmailHtml(buttons_html: str) -> str:
 </head>
 
 <body class="body pc-font-alt"
-      bgcolor="#170831"
-      style="width:100% !important; min-height:100% !important; margin:0 !important; padding:0 !important; background-color:#170831;">
+      bgcolor="#ffffff"
+      style="width:100% !important; min-height:100% !important; margin:0 !important; padding:0 !important; background-color:#ffffff;">
 
   <table class="pc-project-body"
          width="100%"
-         bgcolor="#170831"
+         bgcolor="#ffffff"
          cellpadding="0"
          cellspacing="0"
          role="presentation">
@@ -95,7 +95,7 @@ def buildEmailHtml(buttons_html: str) -> str:
         <table class="pc-project-container" width="600" cellpadding="0" cellspacing="0" role="presentation">
 
           <tr>
-            <td bgcolor="#1B1B1B">
+            <td bgcolor="#ffffff">
               <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
                 <tr>
                   <td background="https://cloudfilesdm.com/postcards/gradient-0e542413.png"
