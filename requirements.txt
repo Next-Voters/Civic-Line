@@ -4,5 +4,5 @@ requests
 bs4
 python-docx
 twilio
-dotenv
+python-dotenv
 supabase
